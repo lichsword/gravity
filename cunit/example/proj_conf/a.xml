@@ -1,0 +1,11 @@
+<project name="example">
+    <build>
+        <finalName>hello</finalName>
+	<sourceDirectory>src</sourceDirectory>
+	<plugins>
+	    <plugin>
+	        <name>cunit</name>
+	    </plugin>
+	</plugins>
+    </build>
+</project>

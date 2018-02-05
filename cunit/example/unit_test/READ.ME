@@ -1,0 +1,46 @@
+ref: http://blog.csdn.net/blaider/article/details/7578141
+>>>>>>>>>>
+__DATE__ 进行预处理的日期（“Mmm dd yyyy”形式的字符串文字，如May 27 2006）
+__FILE__ 代表当前源代码文件名的字符串文字 ，包含了详细路径，如G:/program/study/c+/test1.c
+__LINE__ 代表当前源代码中的行号的整数常量
+__TIME__ 源文件编译时间，格式微“hh：mm：ss”，如：09:11:10；
+__func__ 当前所在函数名，在编译器的较高版本中支持
+__FUNCTION__ 当前所在函数名
+
+对于__FILE__，__LINE__，__func__，__FUNCTION__ 这样的宏，在调试程序时是很有用的，因为你可以很容易的知道程序运行到了哪个文件的那一行，是哪个函数。
+而对于__DATE__，__TIME__则可以获取编译时间，如如下代码通过宏获取编译时间，并通过sscanf（）从中获取具体的年月日时分秒数据，可在代码中做相应使用。我的代码中是根据此数据作为版本标识，并依此判断哪个版本新些及是否需要升级。 
+
+
+>>>>>>>>
+看例子：
+#define PJ_LOG(level,arg) \
+    dosomething();\
+    if (level <= pj_log_get_level()) \
+    pj_log_wrapper_##level(arg);
+现在假设有以下应用：
+if（L==1）
+    PJ_LOG(L,"AAA");
+宏转开为：
+if（L==1）
+    dosomething();
+    if (1 <= pj_log_get_level())
+    pj_log_wrapper_1("AAA"); ;
+显然if（L==1）只管到dosomething();而后面的       
+    if (1 <= pj_log_get_level())
+    pj_log_wrapper_1("AAA"); ;
+
+则成了独立的语句。
+假如使用do{}while（0）语句块，进行宏定义：
+#define PJ_LOG(level,arg)do{ \
+    dosomething();\
+    if (level <= pj_log_get_level()) \
+    pj_log_wrapper_##level(arg); \
+}while(0)
+上述应用转开后为：
+if（L==1）
+do{
+    dosomething();
+    if (1<= pj_log_get_level())
+    pj_log_wrapper_1("AAA");
+}while(0);
+这样避免了意外的麻烦。OK现在明白了很多C程序中奇怪的do{}while（0）宏定义了吧
